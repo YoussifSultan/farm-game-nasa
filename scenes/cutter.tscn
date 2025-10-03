@@ -1,0 +1,50 @@
+[gd_scene load_steps=7 format=3 uid="uid://ssfigotqska5"]
+
+[ext_resource type="Texture2D" uid="uid://6ixdl6xnh7gf" path="res://assets/sprites/Player/Player_Actions.png" id="1_actp3"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_pcbcd"]
+atlas = ExtResource("1_actp3")
+region = Rect2(0, 192, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_kg5or"]
+atlas = ExtResource("1_actp3")
+region = Rect2(48, 192, 48, 48)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_hubnq"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pcbcd")
+}, {
+"duration": 0.91,
+"texture": SubResource("AtlasTexture_kg5or")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_6xvym"]
+radius = 6.08276
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_actp3"]
+radius = 11.0
+
+[node name="CharacterBody2D" type="CharacterBody2D"]
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+position = Vector2(1, -8)
+sprite_frames = SubResource("SpriteFrames_hubnq")
+autoplay = "default"
+frame_progress = 0.800488
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(5.96046e-08, -5)
+rotation = 1.40755
+shape = SubResource("CircleShape2D_6xvym")
+
+[node name="TalkArea" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TalkArea"]
+position = Vector2(0, -5)
+shape = SubResource("CircleShape2D_actp3")

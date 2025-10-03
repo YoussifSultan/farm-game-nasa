@@ -1,0 +1,67 @@
+[gd_scene load_steps=4 format=3 uid="uid://c5iruah5popoh"]
+
+[ext_resource type="Texture2D" uid="uid://dtnuba487jg63" path="res://assets/textures/unnamed.png" id="1_k22ly"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_nh1mb"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nh1mb"]
+bg_color = Color(0.469317, 0.450708, 0.43964, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[node name="listitem" type="PanelContainer"]
+custom_minimum_size = Vector2(100, 0)
+theme_override_styles/panel = SubResource("StyleBoxEmpty_nh1mb")
+metadata/name = ""
+metadata/image_rotation = 0.0
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_top = 20
+
+[node name="Panel" type="Panel" parent="MarginContainer"]
+custom_minimum_size = Vector2(230, 60)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_styles/panel = SubResource("StyleBoxFlat_nh1mb")
+
+[node name="Label" type="Label" parent="MarginContainer/Panel"]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.405138
+anchor_top = 0.233333
+anchor_right = 0.818182
+anchor_bottom = 0.611111
+offset_left = -18.1818
+offset_right = 41.8182
+offset_bottom = 22.3333
+grow_horizontal = 0
+grow_vertical = 2
+size_flags_horizontal = 4
+text = "Water "
+metadata/_edit_use_anchors_ = true
+
+[node name="image_node" type="Node2D" parent="MarginContainer"]
+position = Vector2(0, -10)
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/image_node"]
+custom_minimum_size = Vector2(80, 80)
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = -3.0
+offset_top = 17.0
+offset_right = 77.0
+offset_bottom = 97.0
+grow_vertical = 2
+pivot_offset = Vector2(40, 40)
+size_flags_horizontal = 0
+texture = ExtResource("1_k22ly")
+expand_mode = 1
+stretch_mode = 4
+
+[connection signal="property_list_changed" from="." to="." method="_on_property_list_changed"]

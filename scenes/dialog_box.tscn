@@ -1,0 +1,25 @@
+[gd_scene load_steps=3 format=3 uid="uid://cclaghjo3ld4x"]
+
+[ext_resource type="Script" uid="uid://ds6306lifximj" path="res://scenes/dialog_box.gd" id="1_tihiy"]
+[ext_resource type="Script" uid="uid://wdywi2s18awn" path="res://dialog_text.gd" id="2_df88m"]
+
+[node name="Dialogbox" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 200.0
+offset_bottom = 100.0
+script = ExtResource("1_tihiy")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 0
+offset_right = 202.0
+offset_bottom = 68.0
+color = Color(0, 0, 0, 1)
+
+[node name="RichTextLabel" type="RichTextLabel" parent="."]
+layout_mode = 0
+offset_right = 200.0
+offset_bottom = 100.0
+bbcode_enabled = true
+text = "HI !!!!!!!!!!!!!!!!!"
+script = ExtResource("2_df88m")
