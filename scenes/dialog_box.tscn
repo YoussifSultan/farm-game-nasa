@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://cclaghjo3ld4x"]
+[gd_scene load_steps=4 format=3 uid="uid://cclaghjo3ld4x"]
 
 [ext_resource type="Script" uid="uid://ds6306lifximj" path="res://scenes/dialog_box.gd" id="1_tihiy"]
 [ext_resource type="Script" uid="uid://wdywi2s18awn" path="res://dialog_text.gd" id="2_df88m"]
+[ext_resource type="Texture2D" uid="uid://c6d2g2qvqsyoq" path="res://assets/textures/dailouge box.png" id="2_kxkgd"]
 
 [node name="Dialogbox" type="Control"]
 layout_mode = 3
@@ -10,16 +11,18 @@ offset_right = 200.0
 offset_bottom = 100.0
 script = ExtResource("1_tihiy")
 
-[node name="ColorRect" type="ColorRect" parent="."]
+[node name="TextureRect" type="TextureRect" parent="."]
 layout_mode = 0
-offset_right = 202.0
-offset_bottom = 68.0
-color = Color(0, 0, 0, 1)
+offset_left = -22.0
+offset_top = -17.0
+offset_right = 446.0
+offset_bottom = 155.0
+texture = ExtResource("2_kxkgd")
 
 [node name="RichTextLabel" type="RichTextLabel" parent="."]
-layout_mode = 0
-offset_right = 200.0
-offset_bottom = 100.0
+layout_mode = 1
+offset_right = 419.0
+offset_bottom = 134.0
 bbcode_enabled = true
 text = "HI !!!!!!!!!!!!!!!!!"
 script = ExtResource("2_df88m")

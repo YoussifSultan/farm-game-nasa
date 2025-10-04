@@ -5,6 +5,7 @@ signal input_received
 @onready var rich_text: RichTextLabel = $RichTextLabel
 
 func _ready() -> void:
+	
 	hide()
 
 # Public API: characters just call this with their dialog lines

@@ -1,19 +1,117 @@
 extends Node2D
 
 var date
+var data
+var soil_type
+var crop_stage = "Mid"
 var selected_country
+var number_of_weeks = 0
 @onready var nextweek_btn = get_node("UI/top_right/next_week_btn") # Replace with the actual path to your button
+var crop_scorer = preload("res://scenes/game_scoring.gd").new()
+
+
 
 func _on_soil_body_entered(body: Node2D) -> void:
 	if body.name == "Player":
 		$UI/soil_management.show()
 	pass # Replace with function body.
+	
 
 
 func _on_ready() -> void:
 	start_game()
 	nextweek_btn.pressed.connect(onlick_nextweek)
+	var button = get_node("UI/soil_management/Button")  # adjust path to your button
+	button.pressed.connect(_on_button_pressed)
+	
 
+func _on_button_pressed():
+	
+	var crop = "potato"
+	if $"UI/soil_management/crop chooser/carrot3".focus_entered:
+		crop = "carrot"
+		
+	var fertilizer = $"UI/soil_management/MarginContainer/VBoxContainer/HBoxContainer2/fertilizer".value
+	var water = $"UI/soil_management/MarginContainer/VBoxContainer/HBoxContainer/water".value
+	var pesticide = $"UI/soil_management/MarginContainer/VBoxContainer/HBoxContainer3/pesticide".selected
+	var control = "Chemical"
+	var harvest_time = "Early"
+	if pesticide == 1:
+		control = "Eco"
+	if(number_of_weeks > 6 ):
+		harvest_time = "Late"
+	
+	var soil_N = crop_scorer.get_soil_N(soil_type)
+	var date_str = convert_date_to_string(date)
+
+	#print(data["GWETTOP"][date_str]*100,data["QV2M"][date_str]*100,data["T2M"][date_str],water,soil_N,soil_type,fertilizer,crop_stage,control,harvest_time)
+	var result = crop_scorer.calculate_crop_scores(data["GWETTOP"][date_str]*100,data["QV2M"][date_str]*100, data["T2M"][date_str],water, soil_N, soil_type, fertilizer, crop_stage, control, harvest_time)
+# Combine all parameters + results into a dictionary
+	var game_round_entry = {
+	"week_No" : number_of_weeks,
+	"Soil Moisture": data["GWETTOP"][date_str]*100,
+	"Humidity": data["QV2M"][date_str]*100,
+	"Temperature": data["T2M"][date_str],
+	"water": water,
+	"soil_N": soil_N,
+	"soil_type": soil_type,
+	"fertilizer": fertilizer,
+	"crop_stage": crop_stage,
+	"control": control,
+	"harvest_time": harvest_time,
+	"crop": crop,
+	"crop_quality": result["crop_quality"],
+	"crop_quantity": result["crop_quantity"],
+	"environment_score": result["environment_score"]
+}
+
+# Append to the game rounds list
+	GlobalVariables.game_rounds.append(game_round_entry)
+
+	$"UI/soil_management".hide()
+	var dialog_working: bool = false
+	var dialog_finished: bool = false
+	var DIALOG_LINES =[]
+	for tip in result["tips"]:
+		DIALOG_LINES.append({"speaker": "The game", "text": tip},)	
+	dialog_working = true
+	await $UI/Dialogbox.start_dialog(DIALOG_LINES)
+	dialog_working = false
+	dialog_finished = true   # prevent repeat
+	if(number_of_weeks >=8):
+		end_game();
+func display_game_rounds(entries: Array):
+	# Assuming $GridContainer exists in your scene
+	var grid = $UI/end_game/GridContainer
+	
+	# Clear previous children
+	for child in grid.get_children():
+		child.queue_free()
+	
+	# If entries exist
+	if entries.size() == 0:
+		return
+	
+	# Set columns to number of keys in dictionary
+	grid.columns = entries[0].keys().size()
+	
+	# Add header labels
+	for key in entries[0].keys():
+		var label = Label.new()
+		label.text = str(key)
+
+		grid.add_child(label)
+	
+	# Add each row
+	for entry in entries:
+		for value in entry.values():
+			var label = Label.new()
+			label.text = str(value)
+			grid.add_child(label)
+
+func end_game():
+	$"UI/end_game".show()
+	display_game_rounds(GlobalVariables.game_rounds)
 func onlick_nextweek():
 	date = add_days_to_date(date, 7)
 	get_data(convert_date_to_string(date),selected_country.lat,selected_country.long)
@@ -97,7 +195,7 @@ func random_date(start: Dictionary, end: Dictionary) -> Dictionary:
 
 func get_data(date: String, lat: float, lon: float) -> void:
 	var url = "https://power.larc.nasa.gov/api/temporal/daily/point"
-	url += "?parameters=T2M_MAX,T2M_MIN,RH2M,WS2M,WD2M,PRECTOTCORR,GWETTOP,IMERG_PRECTOT,GWETPROF,QV2M"
+	url += "?parameters=T2M,RH2M,WS2M,WD2M,PRECTOTCORR,GWETTOP,IMERG_PRECTOT,GWETPROF,QV2M"
 	url += "&community=ag"
 	url += "&latitude=%s&longitude=%s" % [str(lat), str(lon)]
 	url += "&start=%s&end=%s" % [date, date]
@@ -114,7 +212,8 @@ func get_data(date: String, lat: float, lon: float) -> void:
 func start_game():
 	randomize()
 	selected_country = countries_data[randi() % countries_data.size()]
-	
+	var soil_types = ["Sandy", "Loamy", "Clay"]
+	soil_type = soil_types[randi() % soil_types.size()]
 
 	var start_date = {"year": 2000, "month": 1, "day": 1}
 	var end_date = subtract_days_from_date(Time.get_datetime_dict_from_system(),365)
@@ -144,16 +243,16 @@ func _on_request_completed(result, response_code, headers, body):
 	if json == null:
 		push_error("Failed to parse JSON")
 		return
-	var data = json["properties"]
+	data = json["properties"]
 	data = data["parameter"]
-	print(data)
 	var date_str = convert_date_to_string(date)
-	$UI/top_left/VFlowContainer/listitem/MarginContainer/Panel/Label.text ="Max Temp : "+ str(data["T2M_MAX"][date_str])
-	$UI/top_left/VFlowContainer/listitem2/MarginContainer/Panel/Label.text ="Min Temp : "+ str(data["T2M_MIN"][date_str])
+	$UI/top_left/VFlowContainer/listitem/MarginContainer/Panel/Label.text ="Temp : "+ str(data["T2M"][date_str])
+	$UI/top_left/VFlowContainer/listitem2/MarginContainer/Panel/Label.text ="Soil Type : "+ soil_type
 	$UI/top_left/VFlowContainer/listitem3/MarginContainer/Panel/Label.text ="Wind Speed :"+ str(data["WS2M"][date_str])
 	$UI/top_left/VFlowContainer/listitem3/MarginContainer/image_node/TextureRect.rotation_degrees = float(data["WD2M"][date_str])
 	$UI/top_left/VFlowContainer/listitem4/MarginContainer/Panel/Label.text ="Country : "+ str(selected_country.name)
 	$UI/top_left/VFlowContainer/listitem5/MarginContainer/Panel/Label.text ="Date : "+ str(date["year"])+"/"+str(date["month"])+"/"+str(date["day"])
 	$UI/top_left/VFlowContainer/listitem6/MarginContainer/Panel/Label.text ="Humidity :"+ str(data["QV2M"][date_str])
 	$UI/top_left/VFlowContainer/listitem7/MarginContainer/Panel/Label.text ="Soil Moisture :"+ str(data["GWETTOP"][date_str])
+	number_of_weeks+=1
 	#$UI/top_left/VFlowContainer/listitem3.image_rotation = float(data["WD2M"][date_str])

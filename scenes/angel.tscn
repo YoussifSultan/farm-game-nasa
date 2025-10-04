@@ -1,0 +1,81 @@
+[gd_scene load_steps=11 format=3 uid="uid://drque3mgtqcc8"]
+
+[ext_resource type="Texture2D" uid="uid://cp4lfqdxe10kk" path="res://assets/sprites/Tileset/Man Idle Set.png" id="1_fgtlr"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_mtvsi"]
+atlas = ExtResource("1_fgtlr")
+region = Rect2(0, 0, 160, 320)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6gyu6"]
+atlas = ExtResource("1_fgtlr")
+region = Rect2(160, 0, 160, 320)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_whldq"]
+atlas = ExtResource("1_fgtlr")
+region = Rect2(320, 0, 160, 320)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_deem3"]
+atlas = ExtResource("1_fgtlr")
+region = Rect2(480, 0, 160, 320)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_y5l0u"]
+atlas = ExtResource("1_fgtlr")
+region = Rect2(640, 0, 160, 320)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5lhwv"]
+atlas = ExtResource("1_fgtlr")
+region = Rect2(800, 0, 160, 320)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_och72"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_mtvsi")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_6gyu6")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_whldq")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_deem3")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_y5l0u")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_5lhwv")
+}],
+"loop": true,
+"name": &"Idle",
+"speed": 10.0
+}]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_fgtlr"]
+radius = 2.0
+height = 18.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_fgtlr"]
+radius = 12.0
+
+[node name="angel" type="CharacterBody2D"]
+position = Vector2(2, -2)
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+position = Vector2(1, -1)
+scale = Vector2(0.09375, 0.08125)
+sprite_frames = SubResource("SpriteFrames_och72")
+animation = &"Idle"
+autoplay = "Idle"
+frame_progress = 0.789486
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(5, 0)
+shape = SubResource("CapsuleShape2D_fgtlr")
+
+[node name="TalkArea" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TalkArea"]
+position = Vector2(6, 0)
+shape = SubResource("CircleShape2D_fgtlr")

@@ -8,7 +8,17 @@ func _on_ready() -> void:
 
 
 
+func _on_water_value_changed(value: float) -> void:
+	$MarginContainer/VBoxContainer/HBoxContainer/waterr_amt.text = str(value) + "mm"
+	
+
+
+func _on_fertilizer_value_changed(value: float) -> void:
+	$MarginContainer/VBoxContainer/HBoxContainer2/fertilizer_amt.text = str(value) + "%"
+	
+	pass # Replace with function body.
+
+
 func _on_texture_rect_gui_input(event: InputEvent) -> void:
-	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
-		hide()
+	hide()
 	pass # Replace with function body.
